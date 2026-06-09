@@ -1,4 +1,4 @@
-name: Test abort-after-seconds input
+name: Test initial-wait-seconds input
 on:
   workflow_dispatch:
 jobs:
@@ -13,11 +13,12 @@ jobs:
         uses: .
         with:
           token: ${{ github.token }}
-          abort-after-seconds: "30"
+          initial-wait-seconds: "5"
+          continue-after-seconds: "10"
           poll-interval-seconds: "10"
           same-branch-only: "true"
         continue-on-error: true
-      - name: Assert action completed
+      - name: Assert action completed with initial-wait-seconds input
         run: |
-          echo "abort-after-seconds test completed"
+          echo "initial-wait-seconds input test completed"
           echo "PASS"

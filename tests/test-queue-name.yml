@@ -1,4 +1,4 @@
-name: Test abort-after-seconds input
+name: Test queue-name input
 on:
   workflow_dispatch:
 jobs:
@@ -13,11 +13,12 @@ jobs:
         uses: .
         with:
           token: ${{ github.token }}
-          abort-after-seconds: "30"
+          queue-name: "my-custom-queue"
+          continue-after-seconds: "5"
           poll-interval-seconds: "10"
           same-branch-only: "true"
         continue-on-error: true
-      - name: Assert action completed
+      - name: Assert action completed with queue-name input
         run: |
-          echo "abort-after-seconds test completed"
+          echo "queue-name input test completed"
           echo "PASS"

@@ -1,4 +1,4 @@
-name: Test abort-after-seconds input
+name: Test job-to-wait-for and step-to-wait-for inputs
 on:
   workflow_dispatch:
 jobs:
@@ -13,11 +13,13 @@ jobs:
         uses: .
         with:
           token: ${{ github.token }}
-          abort-after-seconds: "30"
+          job-to-wait-for: "deploy"
+          step-to-wait-for: "Deploy step"
+          continue-after-seconds: "5"
           poll-interval-seconds: "10"
-          same-branch-only: "true"
+          same-branch-only: "false"
         continue-on-error: true
-      - name: Assert action completed
+      - name: Assert action completed with job-to-wait-for and step-to-wait-for inputs
         run: |
-          echo "abort-after-seconds test completed"
+          echo "job-to-wait-for and step-to-wait-for input test completed"
           echo "PASS"
