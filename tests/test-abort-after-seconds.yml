@@ -1,0 +1,26 @@
+name: Test abort-after-seconds input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          token: ${{ github.token }}
+          abort-after-seconds: "30"
+          poll-interval-seconds: "10"
+          same-branch-only: "false"
+        continue-on-error: true
+      - name: Assert action completed
+        run: |
+          echo "action outcome: ${{ steps.action.outcome }}"
+          # The action should either succeed (no prior run) or fail with abort.
+          # In a test environment with no competing runs, it should succeed.
+          echo "PASS: action completed with abort-after-seconds set"

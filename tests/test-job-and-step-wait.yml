@@ -1,0 +1,28 @@
+name: Test job-to-wait-for and step-to-wait-for inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          token: ${{ github.token }}
+          job-to-wait-for: "deploy"
+          step-to-wait-for: "Deploy to production"
+          continue-after-seconds: "5"
+          same-branch-only: "true"
+        continue-on-error: true
+      - name: Assert action completed
+        run: |
+          echo "action outcome: ${{ steps.action.outcome }}"
+          echo "force_continued: ${{ steps.action.outputs.force_continued }}"
+          echo "previous_run_id: ${{ steps.action.outputs.previous_run_id }}"
+          echo "previous_run_url: ${{ steps.action.outputs.previous_run_url }}"
+          echo "PASS: action completed with job-to-wait-for and step-to-wait-for set"

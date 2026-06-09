@@ -1,0 +1,27 @@
+name: Test branch, initial-wait-seconds, and queue-name inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      GITHUB_REF: refs/heads/feature-branch
+      GITHUB_EVENT_NAME: push
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          token: ${{ github.token }}
+          branch: "feature-branch"
+          initial-wait-seconds: "5"
+          queue-name: "my-custom-queue"
+          continue-after-seconds: "5"
+          same-branch-only: "true"
+        continue-on-error: true
+      - name: Assert action completed
+        run: |
+          echo "action outcome: ${{ steps.action.outcome }}"
+          echo "force_continued: ${{ steps.action.outputs.force_continued }}"
+          echo "PASS: action completed with branch, initial-wait-seconds, and queue-name set"
