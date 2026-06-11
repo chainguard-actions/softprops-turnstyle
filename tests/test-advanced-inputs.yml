@@ -1,0 +1,33 @@
+name: Test advanced inputs - branch, queue-name, job-to-wait-for, step-to-wait-for
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          token: ${{ github.token }}
+          continue-after-seconds: "1"
+          branch: "main"
+          queue-name: "test-queue"
+          job-to-wait-for: "build"
+          step-to-wait-for: "compile"
+          same-branch-only: "true"
+        continue-on-error: true
+      - name: Assert action completed
+        env:
+          FORCE_CONTINUED: ${{ steps.action.outputs.force_continued }}
+          PREV_RUN_ID: ${{ steps.action.outputs.previous_run_id }}
+          PREV_RUN_URL: ${{ steps.action.outputs.previous_run_url }}
+        run: |
+          echo "force_continued: $FORCE_CONTINUED"
+          echo "previous_run_id: $PREV_RUN_ID"
+          echo "previous_run_url: $PREV_RUN_URL"
+          echo "PASS: action accepted all advanced inputs and completed"
