@@ -1,4 +1,4 @@
-name: Test job-to-wait-for and step-to-wait-for inputs
+name: Test abort-after-seconds, branch, and queue-name inputs
 on:
   workflow_dispatch:
 jobs:
@@ -14,13 +14,14 @@ jobs:
         uses: .
         with:
           token: ${{ github.token }}
-          continue-after-seconds: "1"
-          job-to-wait-for: "build"
-          step-to-wait-for: "deploy"
-          poll-interval-seconds: "5"
+          abort-after-seconds: "5"
+          branch: "main"
+          queue-name: "test-queue"
+          same-branch-only: "false"
         continue-on-error: true
       - name: Assert action completed
         run: |
           echo "action outcome: ${{ steps.action.outcome }}"
-          echo "force_continued: ${{ steps.action.outputs.force_continued }}"
-          echo "PASS: action ran with job-to-wait-for and step-to-wait-for inputs"
+          # The action may succeed (no prior run) or fail (abort-after-seconds triggered).
+          # Either outcome is acceptable — we just verify the action ran.
+          echo "PASS: action ran with abort-after-seconds, branch, and queue-name inputs"

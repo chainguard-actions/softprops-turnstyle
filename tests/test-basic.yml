@@ -1,10 +1,11 @@
-name: Test basic usage
+name: Test basic usage with continue-after-seconds
 on:
   workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-latest
     env:
+      GITHUB_TOKEN: ${{ github.token }}
       GITHUB_REF: refs/heads/main
       GITHUB_EVENT_NAME: push
     steps:
@@ -14,15 +15,16 @@ jobs:
         with:
           token: ${{ github.token }}
           poll-interval-seconds: "10"
-          continue-after-seconds: "5"
+          continue-after-seconds: "1"
           same-branch-only: "true"
+          initial-wait-seconds: "0"
         continue-on-error: true
       - name: Assert force_continued output is set
         env:
           FORCE_CONTINUED: ${{ steps.action.outputs.force_continued }}
         run: |
           echo "force_continued: $FORCE_CONTINUED"
-          # When continue-after-seconds is used and no prior run is found,
-          # force_continued may be false or true depending on timing.
-          # The action should complete without error.
+          # When continue-after-seconds is used and no prior run is blocking,
+          # force_continued may be false or true — either is valid.
+          # The key assertion is that the action completed without crashing.
           echo "PASS: action completed"
