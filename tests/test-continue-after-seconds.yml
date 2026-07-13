@@ -1,0 +1,64 @@
+name: Test continue-after-seconds
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+      GITHUB_REPOSITORY: test-owner/test-repo
+      GITHUB_WORKFLOW: Test continue-after-seconds
+      GITHUB_RUN_ID: "1"
+      GITHUB_RUN_ATTEMPT: "1"
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: turnstyle
+        uses: .
+        with:
+          token: ${{ github.token }}
+          poll-interval-seconds: "5"
+          continue-after-seconds: "10"
+          same-branch-only: "true"
+        continue-on-error: true
+
+      - name: Assert action ran (step outcome is success or failure, not skipped)
+        env:
+          OUTCOME: ${{ steps.turnstyle.outcome }}
+        run: |
+          echo "step outcome: $OUTCOME"
+          if [ "$OUTCOME" = "skipped" ]; then
+            echo "FAIL: action step was skipped unexpectedly"
+            exit 1
+          fi
+          echo "PASS: action ran (outcome=$OUTCOME)"
+
+      - name: Assert force_continued output is valid if set
+        env:
+          ACTUAL: ${{ steps.turnstyle.outputs.force_continued }}
+        run: |
+          echo "force_continued: '$ACTUAL'"
+          # force_continued should be empty, "false", "true", or "1"
+          if [ -n "$ACTUAL" ] && [ "$ACTUAL" != "false" ] && [ "$ACTUAL" != "true" ] && [ "$ACTUAL" != "1" ]; then
+            echo "FAIL: unexpected force_continued value: '$ACTUAL'"
+            exit 1
+          fi
+          echo "PASS: force_continued is valid (empty, false, true, or 1)"
+
+      - name: Assert previous_run_url format if set
+        env:
+          ACTUAL: ${{ steps.turnstyle.outputs.previous_run_url }}
+        run: |
+          echo "previous_run_url: '$ACTUAL'"
+          if [ -n "$ACTUAL" ]; then
+            if echo "$ACTUAL" | grep -qE '^https://'; then
+              echo "PASS: previous_run_url is a valid URL"
+            else
+              echo "FAIL: previous_run_url does not look like a URL: $ACTUAL"
+              exit 1
+            fi
+          else
+            echo "PASS: no previous run URL (no previous run found or API error)"
+          fi

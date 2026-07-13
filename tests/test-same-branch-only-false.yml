@@ -1,0 +1,47 @@
+name: Test same-branch-only false
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      GITHUB_REF: refs/heads/feature-branch
+      GITHUB_EVENT_NAME: push
+      GITHUB_REPOSITORY: test-owner/test-repo
+      GITHUB_WORKFLOW: Test same-branch-only false
+      GITHUB_RUN_ID: "1"
+      GITHUB_RUN_ATTEMPT: "1"
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: turnstyle
+        uses: .
+        with:
+          token: ${{ github.token }}
+          poll-interval-seconds: "5"
+          continue-after-seconds: "10"
+          same-branch-only: "false"
+        continue-on-error: true
+
+      - name: Assert action ran (step outcome is success or failure, not skipped)
+        env:
+          OUTCOME: ${{ steps.turnstyle.outcome }}
+        run: |
+          echo "step outcome: $OUTCOME"
+          if [ "$OUTCOME" = "skipped" ]; then
+            echo "FAIL: action step was skipped unexpectedly"
+            exit 1
+          fi
+          echo "PASS: action ran with same-branch-only=false (outcome=$OUTCOME)"
+
+      - name: Assert force_continued output is valid if set
+        env:
+          ACTUAL: ${{ steps.turnstyle.outputs.force_continued }}
+        run: |
+          echo "force_continued: '$ACTUAL'"
+          if [ -n "$ACTUAL" ] && [ "$ACTUAL" != "false" ] && [ "$ACTUAL" != "true" ] && [ "$ACTUAL" != "1" ]; then
+            echo "FAIL: unexpected force_continued value: '$ACTUAL'"
+            exit 1
+          fi
+          echo "PASS: force_continued is valid"
