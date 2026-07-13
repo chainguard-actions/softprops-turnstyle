@@ -15,6 +15,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 | v3.2.4 | [`v3.2.4`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.4) | — |
 | v3.3.0 | [`v3.3.0`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.0) | [`99fadf3`](https://github.com/softprops/turnstyle/commit/99fadf33b72861eba49a55800c75e279a2e9740a) |
 | v3.3.1 | [`v3.3.1`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.1) | [`fa86562`](https://github.com/softprops/turnstyle/commit/fa86562458e34a9067f0dc1316a76b3975b1c413) |
+| v3.3.2 | [`v3.3.2`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.2) | [`afaccda`](https://github.com/softprops/turnstyle/commit/afaccda0f3c0136fb7cb4a734b9b96be03599948) |
 
 ## Privacy
 
