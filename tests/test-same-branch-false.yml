@@ -1,4 +1,4 @@
-name: Test basic usage - continue after seconds
+name: Test same-branch-only false with queue-name
 on:
   workflow_dispatch:
 jobs:
@@ -13,9 +13,10 @@ jobs:
         with:
           poll-interval-seconds: '5'
           continue-after-seconds: '10'
-          same-branch-only: 'true'
+          same-branch-only: 'false'
+          queue-name: 'test-queue'
 
-      - name: Assert action ran and produced expected output
+      - name: Assert action ran with same-branch-only=false and queue-name
         env:
           OUTCOME: ${{ steps.turnstyle.outcome }}
           FORCE_CONTINUED: ${{ steps.turnstyle.outputs.force_continued }}

@@ -1,4 +1,4 @@
-name: Test basic usage - continue after seconds
+name: Test abort-after-seconds
 on:
   workflow_dispatch:
 jobs:
@@ -12,10 +12,10 @@ jobs:
         continue-on-error: true
         with:
           poll-interval-seconds: '5'
-          continue-after-seconds: '10'
+          abort-after-seconds: '10'
           same-branch-only: 'true'
 
-      - name: Assert action ran and produced expected output
+      - name: Assert action ran and handled abort-after-seconds
         env:
           OUTCOME: ${{ steps.turnstyle.outcome }}
           FORCE_CONTINUED: ${{ steps.turnstyle.outputs.force_continued }}
@@ -23,14 +23,15 @@ jobs:
           echo "outcome: $OUTCOME"
           echo "force_continued: $FORCE_CONTINUED"
           if [ "$OUTCOME" = "success" ]; then
-            # Action succeeded - force_continued should be "true" or "false"
-            if [ "$FORCE_CONTINUED" != "true" ] && [ "$FORCE_CONTINUED" != "false" ]; then
-              echo "FAIL: expected force_continued to be 'true' or 'false', got: '$FORCE_CONTINUED'"
+            # No competing runs found, action proceeded immediately
+            # force_continued should be "false" (abort-after-seconds, not continue-after-seconds)
+            if [ "$FORCE_CONTINUED" != "false" ] && [ -n "$FORCE_CONTINUED" ]; then
+              echo "FAIL: expected force_continued to be 'false' or empty when using abort-after-seconds, got: '$FORCE_CONTINUED'"
               exit 1
             fi
-            echo "PASS: action succeeded with force_continued=$FORCE_CONTINUED"
+            echo "PASS: action succeeded (no competing runs), force_continued=$FORCE_CONTINUED"
           elif [ "$OUTCOME" = "failure" ]; then
-            echo "PASS: action failed gracefully (sentinel repo not resolvable via GitHub API)"
+            echo "PASS: action failed gracefully (sentinel repo not resolvable, or aborted after timeout)"
           else
             echo "FAIL: unexpected outcome '$OUTCOME'"
             exit 1
