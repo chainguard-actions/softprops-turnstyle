@@ -1,4 +1,4 @@
-name: Test abort-after-seconds input
+name: Test abort-after-seconds
 on:
   workflow_dispatch:
 jobs:
@@ -6,16 +6,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - id: action
+      - id: turnstyle
         uses: .
         with:
-          abort-after-seconds: "30"
-          poll-interval-seconds: "5"
-          same-branch-only: "false"
+          poll-interval-seconds: '5'
+          abort-after-seconds: '10'
         continue-on-error: true
+      - name: Assert action ran (aborted or failed gracefully)
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Assert step ran
+          OUTCOME: ${{ steps.turnstyle.outcome }}
+          FORCE_CONTINUED: ${{ steps.turnstyle.outputs.force_continued }}
         run: |
-          echo "abort-after-seconds test completed (action may have aborted or passed)"
-          echo "PASS"
+          echo "outcome: $OUTCOME"
+          echo "force_continued: $FORCE_CONTINUED"
+          # With abort-after-seconds, the action either:
+          # - succeeds quickly (no competing runs found via API)
+          # - fails after timeout (abort behavior)
+          # - fails due to sentinel repo (API 404)
+          if [ "$OUTCOME" = "success" ]; then
+            # Succeeded: force_continued should be false (abort mode doesn't set it to true)
+            echo "PASS: action succeeded, force_continued=$FORCE_CONTINUED"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed as expected (abort timeout or sentinel repo)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi

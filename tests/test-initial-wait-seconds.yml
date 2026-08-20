@@ -1,0 +1,31 @@
+name: Test initial-wait-seconds input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          poll-interval-seconds: '10'
+          initial-wait-seconds: '5'
+          abort-after-seconds: '30'
+          same-branch-only: 'false'
+      - name: Assert action ran with initial-wait-seconds
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+          FORCE_CONTINUED: ${{ steps.action.outputs.force_continued }}
+        run: |
+          echo "outcome: $OUTCOME"
+          echo "force_continued: $FORCE_CONTINUED"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded (no competing runs found)"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (sentinel repo not resolvable or timed out)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi

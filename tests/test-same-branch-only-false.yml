@@ -1,4 +1,4 @@
-name: Test basic usage - continue after seconds
+name: Test same-branch-only false with queue-name
 on:
   workflow_dispatch:
 jobs:
@@ -11,8 +11,10 @@ jobs:
         with:
           poll-interval-seconds: '5'
           continue-after-seconds: '10'
+          same-branch-only: 'false'
+          queue-name: 'test-queue'
         continue-on-error: true
-      - name: Assert action ran and force_continued output is set
+      - name: Assert action ran with same-branch-only=false
         env:
           OUTCOME: ${{ steps.turnstyle.outcome }}
           FORCE_CONTINUED: ${{ steps.turnstyle.outputs.force_continued }}
@@ -20,7 +22,7 @@ jobs:
           echo "outcome: $OUTCOME"
           echo "force_continued: $FORCE_CONTINUED"
           if [ "$OUTCOME" = "success" ]; then
-            # When no other runs are queued, force_continued should be false
+            # force_continued should be a boolean string
             if [ "$FORCE_CONTINUED" != "false" ] && [ "$FORCE_CONTINUED" != "true" ]; then
               echo "FAIL: expected force_continued to be 'true' or 'false', got: '$FORCE_CONTINUED'"
               exit 1
