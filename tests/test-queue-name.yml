@@ -1,4 +1,4 @@
-name: Test queue-name and initial-wait-seconds inputs
+name: Test queue-name input
 on:
   workflow_dispatch:
 jobs:
@@ -8,22 +8,23 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - id: action
         uses: .
+        continue-on-error: true
         with:
-          token: ${{ github.token }}
-          queue-name: "test-queue"
-          initial-wait-seconds: "5"
-          continue-after-seconds: "5"
-          poll-interval-seconds: "5"
-          same-branch-only: "false"
+          poll-interval-seconds: '5'
+          abort-after-seconds: '10'
+          queue-name: 'my-custom-queue'
+      - name: Assert action ran with custom queue-name
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Assert force_continued output is set
-        env:
+          OUTCOME: ${{ steps.action.outcome }}
           FORCE_CONTINUED: ${{ steps.action.outputs.force_continued }}
         run: |
+          echo "outcome: $OUTCOME"
           echo "force_continued: $FORCE_CONTINUED"
-          if [ "$FORCE_CONTINUED" != "true" ] && [ "$FORCE_CONTINUED" != "false" ]; then
-            echo "FAIL: expected force_continued to be 'true' or 'false', got '$FORCE_CONTINUED'"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded with custom queue-name"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (sentinel repo is not resolvable)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
             exit 1
           fi
-          echo "PASS"

@@ -1,4 +1,4 @@
-name: Test abort-after-seconds input
+name: Test abort-after-seconds
 on:
   workflow_dispatch:
 jobs:
@@ -8,20 +8,23 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - id: action
         uses: .
-        with:
-          token: ${{ github.token }}
-          abort-after-seconds: "30"
-          poll-interval-seconds: "10"
-          same-branch-only: "false"
         continue-on-error: true
+        with:
+          poll-interval-seconds: '5'
+          abort-after-seconds: '15'
+      - name: Assert action ran (aborted or failed gracefully on sentinel repo)
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Assert step ran (either succeeded or aborted)
+          OUTCOME: ${{ steps.action.outcome }}
+          FORCE_CONTINUED: ${{ steps.action.outputs.force_continued }}
         run: |
-          echo "action outcome: ${{ steps.action.outcome }}"
-          if [ "${{ steps.action.outcome }}" = "success" ] || [ "${{ steps.action.outcome }}" = "failure" ]; then
-            echo "PASS: action completed with outcome ${{ steps.action.outcome }}"
+          echo "outcome: $OUTCOME"
+          echo "force_continued: $FORCE_CONTINUED"
+          if [ "$OUTCOME" = "success" ]; then
+            # No competing runs found, action passed through
+            echo "PASS: action succeeded (no competing runs or sentinel repo)"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (sentinel repo not resolvable, or aborted after timeout)"
           else
-            echo "FAIL: unexpected outcome ${{ steps.action.outcome }}"
+            echo "FAIL: unexpected outcome '$OUTCOME'"
             exit 1
           fi

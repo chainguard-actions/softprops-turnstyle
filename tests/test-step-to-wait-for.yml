@@ -1,4 +1,4 @@
-name: Test basic usage
+name: Test step-to-wait-for input
 on:
   workflow_dispatch:
 jobs:
@@ -11,16 +11,17 @@ jobs:
         continue-on-error: true
         with:
           poll-interval-seconds: '5'
+          job-to-wait-for: 'test'
+          step-to-wait-for: 'Assert step-to-wait-for input'
           abort-after-seconds: '10'
-      - name: Assert action ran (success or graceful failure on sentinel repo)
+          same-branch-only: 'false'
+      - name: Assert action ran with step-to-wait-for input
         env:
           OUTCOME: ${{ steps.action.outcome }}
-          FORCE_CONTINUED: ${{ steps.action.outputs.force_continued }}
         run: |
           echo "outcome: $OUTCOME"
-          echo "force_continued: $FORCE_CONTINUED"
           if [ "$OUTCOME" = "success" ]; then
-            echo "PASS: action succeeded"
+            echo "PASS: action succeeded (no competing runs found for job/step)"
           elif [ "$OUTCOME" = "failure" ]; then
             echo "PASS: action failed gracefully (sentinel repo is not resolvable)"
           else
