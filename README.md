@@ -8,7 +8,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 | Version | Tag | Upstream commit |
 |---------|-----|-----------------|
-| v3.2.0 | [`v3.2.0`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.0) | — |
+| v3.2.0 | [`v3.2.0`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.0) | [`9d692f1`](https://github.com/softprops/turnstyle/commit/9d692f15fa9f84928799bccac2dba6565e024bdf) |
 | v3.2.1 | [`v3.2.1`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.1) | [`2e4451e`](https://github.com/softprops/turnstyle/commit/2e4451ef94c5969eee533c487092052d4d1a53af) |
 | v3.2.2 | [`v3.2.2`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.2) | — |
 | v3.2.3 | [`v3.2.3`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.3) | [`e565d2d`](https://github.com/softprops/turnstyle/commit/e565d2d86403c5d23533937e95980570545e5586) |
