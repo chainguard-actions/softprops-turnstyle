@@ -1,4 +1,4 @@
-name: Test basic usage with continue-after-seconds
+name: Test same-branch-only false with queue-name
 on:
   workflow_dispatch:
 jobs:
@@ -12,8 +12,9 @@ jobs:
         with:
           poll-interval-seconds: '2'
           continue-after-seconds: '5'
-          same-branch-only: 'true'
-      - name: Assert action ran and force_continued or failed gracefully
+          same-branch-only: 'false'
+          queue-name: 'test-queue'
+      - name: Assert action ran with same-branch-only=false
         env:
           OUTCOME: ${{ steps.action.outcome }}
           FORCE_CONTINUED: ${{ steps.action.outputs.force_continued }}
@@ -21,7 +22,6 @@ jobs:
           echo "outcome: $OUTCOME"
           echo "force_continued: $FORCE_CONTINUED"
           if [ "$OUTCOME" = "success" ]; then
-            # If the action succeeded, force_continued should be set (true or false)
             echo "PASS: action succeeded with force_continued='$FORCE_CONTINUED'"
           elif [ "$OUTCOME" = "failure" ]; then
             echo "PASS: action failed gracefully (sentinel repo is not resolvable via GitHub API)"

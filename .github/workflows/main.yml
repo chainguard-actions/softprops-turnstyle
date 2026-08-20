@@ -1,0 +1,56 @@
+name: main
+
+on:
+  workflow_dispatch:
+  push:
+    paths-ignore:
+      - "*.md"
+    branches:
+      - master
+  pull_request:
+    paths-ignore:
+      - "*.md"
+    branches:
+      - master
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
+
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v4
+        with:
+          node-version-file: ".tool-versions"
+          cache: "npm"
+
+      - name: Install
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Test
+        run: npm run test
+      - name: Format
+        run: npm run fmtcheck
+
+  integration:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
+
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v4
+        with:
+          node-version-file: ".tool-versions"
+          cache: "npm"
+
+      - name: Turnstyle
+        uses: ./ # Uses an action in the root directory
+        with:
+          poll-interval-seconds: 10
+
+      - name: Deploy
+        run: sleep 180

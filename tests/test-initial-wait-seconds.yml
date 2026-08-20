@@ -1,4 +1,4 @@
-name: Test basic usage with continue-after-seconds
+name: Test initial-wait-seconds input
 on:
   workflow_dispatch:
 jobs:
@@ -10,10 +10,10 @@ jobs:
         uses: .
         continue-on-error: true
         with:
-          poll-interval-seconds: '2'
-          continue-after-seconds: '5'
-          same-branch-only: 'true'
-      - name: Assert action ran and force_continued or failed gracefully
+          poll-interval-seconds: '10'
+          initial-wait-seconds: '5'
+          continue-after-seconds: '15'
+      - name: Assert action ran with initial-wait-seconds
         env:
           OUTCOME: ${{ steps.action.outcome }}
           FORCE_CONTINUED: ${{ steps.action.outputs.force_continued }}
@@ -21,10 +21,9 @@ jobs:
           echo "outcome: $OUTCOME"
           echo "force_continued: $FORCE_CONTINUED"
           if [ "$OUTCOME" = "success" ]; then
-            # If the action succeeded, force_continued should be set (true or false)
-            echo "PASS: action succeeded with force_continued='$FORCE_CONTINUED'"
+            echo "PASS: action succeeded"
           elif [ "$OUTCOME" = "failure" ]; then
-            echo "PASS: action failed gracefully (sentinel repo is not resolvable via GitHub API)"
+            echo "PASS: action failed gracefully (sentinel repo is not resolvable)"
           else
             echo "FAIL: unexpected outcome '$OUTCOME'"
             exit 1

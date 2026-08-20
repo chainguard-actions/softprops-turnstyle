@@ -1,0 +1,36 @@
+name: Test abort-after-seconds
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          poll-interval-seconds: '2'
+          abort-after-seconds: '5'
+          same-branch-only: 'true'
+      - name: Assert action failed or succeeded gracefully
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+          FORCE_CONTINUED: ${{ steps.action.outputs.force_continued }}
+        run: |
+          echo "outcome: $OUTCOME"
+          echo "force_continued: $FORCE_CONTINUED"
+          if [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed as expected (aborted after timeout or sentinel repo API failure)"
+          elif [ "$OUTCOME" = "success" ]; then
+            # If no other runs were found, the action may succeed immediately
+            # force_continued should be false (abort-after-seconds, not continue-after-seconds)
+            if [ "$FORCE_CONTINUED" = "true" ]; then
+              echo "FAIL: force_continued should not be true when using abort-after-seconds"
+              exit 1
+            fi
+            echo "PASS: action succeeded immediately (no competing runs found), force_continued='$FORCE_CONTINUED'"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
