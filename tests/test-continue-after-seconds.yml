@@ -1,4 +1,4 @@
-name: Test basic usage
+name: Test continue-after-seconds output
 on:
   workflow_dispatch:
 jobs:
@@ -11,9 +11,9 @@ jobs:
         continue-on-error: true
         with:
           poll-interval-seconds: '5'
-          continue-after-seconds: '10'
+          continue-after-seconds: '8'
           same-branch-only: 'false'
-      - name: Assert action ran (succeeded or failed gracefully on sentinel repo)
+      - name: Assert force_continued output or graceful failure
         env:
           OUTCOME: ${{ steps.action.outcome }}
           FORCE_CONTINUED: ${{ steps.action.outputs.force_continued }}
@@ -21,7 +21,9 @@ jobs:
           echo "outcome: $OUTCOME"
           echo "force_continued: $FORCE_CONTINUED"
           if [ "$OUTCOME" = "success" ]; then
-            echo "PASS: action succeeded (no competing runs found)"
+            # If the action succeeded, it either found no competing runs (force_continued=false)
+            # or it timed out and continued (force_continued=true). Both are valid.
+            echo "PASS: action succeeded with force_continued='$FORCE_CONTINUED'"
           elif [ "$OUTCOME" = "failure" ]; then
             echo "PASS: action failed gracefully (sentinel repo is not resolvable)"
           else

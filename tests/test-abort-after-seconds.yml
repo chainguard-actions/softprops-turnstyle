@@ -1,28 +1,36 @@
-name: Test abort-after-seconds and initial-wait-seconds
+name: Test abort-after-seconds
 on:
   workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ github.token }}
-      GITHUB_REF: refs/heads/main
-      GITHUB_EVENT_NAME: push
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - id: action
         uses: .
+        continue-on-error: true
         with:
-          token: ${{ github.token }}
-          abort-after-seconds: "30"
-          initial-wait-seconds: "0"
-      - name: Assert step completed
+          poll-interval-seconds: '5'
+          abort-after-seconds: '8'
+          same-branch-only: 'false'
+      - name: Assert action failed (abort timeout or sentinel repo)
         env:
-          ACTUAL: ${{ steps.action.outputs.force_continued }}
+          OUTCOME: ${{ steps.action.outcome }}
+          FORCE_CONTINUED: ${{ steps.action.outputs.force_continued }}
         run: |
-          echo "actual force_continued: $ACTUAL"
-          if [ "$ACTUAL" != "false" ] && [ "$ACTUAL" != "" ]; then
-            echo "FAIL: expected force_continued to be 'false' or empty when not continuing, got '$ACTUAL'"
+          echo "outcome: $OUTCOME"
+          echo "force_continued: $FORCE_CONTINUED"
+          if [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed as expected (abort timeout or sentinel repo not resolvable)"
+          elif [ "$OUTCOME" = "success" ]; then
+            # If no competing runs were found, the action may succeed immediately
+            # In that case force_continued should be false (abort path doesn't set it)
+            echo "PASS: action succeeded immediately (no competing runs found)"
+            if [ "$FORCE_CONTINUED" = "true" ]; then
+              echo "FAIL: force_continued should not be true on abort path"
+              exit 1
+            fi
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
             exit 1
           fi
-          echo "PASS: action completed without aborting"

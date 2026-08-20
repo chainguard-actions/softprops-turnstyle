@@ -1,4 +1,4 @@
-name: Test basic usage
+name: Test queue-name custom grouping
 on:
   workflow_dispatch:
 jobs:
@@ -13,7 +13,8 @@ jobs:
           poll-interval-seconds: '5'
           continue-after-seconds: '10'
           same-branch-only: 'false'
-      - name: Assert action ran (succeeded or failed gracefully on sentinel repo)
+          queue-name: 'test-queue'
+      - name: Assert action ran with custom queue name
         env:
           OUTCOME: ${{ steps.action.outcome }}
           FORCE_CONTINUED: ${{ steps.action.outputs.force_continued }}
@@ -21,7 +22,7 @@ jobs:
           echo "outcome: $OUTCOME"
           echo "force_continued: $FORCE_CONTINUED"
           if [ "$OUTCOME" = "success" ]; then
-            echo "PASS: action succeeded (no competing runs found)"
+            echo "PASS: action succeeded with custom queue-name (force_continued='$FORCE_CONTINUED')"
           elif [ "$OUTCOME" = "failure" ]; then
             echo "PASS: action failed gracefully (sentinel repo is not resolvable)"
           else
