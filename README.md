@@ -10,7 +10,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 |---------|-----|-----------------|
 | v3.2.0 | [`v3.2.0`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.0) | [`9d692f1`](https://github.com/softprops/turnstyle/commit/9d692f15fa9f84928799bccac2dba6565e024bdf) |
 | v3.2.1 | [`v3.2.1`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.1) | [`2e4451e`](https://github.com/softprops/turnstyle/commit/2e4451ef94c5969eee533c487092052d4d1a53af) |
-| v3.2.2 | [`v3.2.2`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.2) | — |
+| v3.2.2 | [`v3.2.2`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.2) | [`15f9da4`](https://github.com/softprops/turnstyle/commit/15f9da4059166900981058ba251e0b652511c68f) |
 | v3.2.3 | [`v3.2.3`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.3) | [`e565d2d`](https://github.com/softprops/turnstyle/commit/e565d2d86403c5d23533937e95980570545e5586) |
 | v3.2.4 | [`v3.2.4`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.4) | — |
 | v3.3.0 | [`v3.3.0`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.0) | [`99fadf3`](https://github.com/softprops/turnstyle/commit/99fadf33b72861eba49a55800c75e279a2e9740a) |
