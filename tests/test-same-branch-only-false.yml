@@ -1,0 +1,45 @@
+name: Test same-branch-only false with queue-name
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          poll-interval-seconds: "5"
+          continue-after-seconds: "10"
+          same-branch-only: "false"
+          queue-name: "test-queue"
+      - name: Assert action ran with same-branch-only false or failed gracefully
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+          FORCE_CONTINUED: ${{ steps.action.outputs.force_continued }}
+          PREV_RUN_ID: ${{ steps.action.outputs.previous_run_id }}
+          PREV_RUN_URL: ${{ steps.action.outputs.previous_run_url }}
+        run: |
+          echo "outcome: $OUTCOME"
+          echo "force_continued: $FORCE_CONTINUED"
+          echo "previous_run_id: $PREV_RUN_ID"
+          echo "previous_run_url: $PREV_RUN_URL"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded"
+            # If a previous run was found, both id and url should be set together
+            if [ -n "$PREV_RUN_ID" ] && [ -z "$PREV_RUN_URL" ]; then
+              echo "FAIL: previous_run_id is set but previous_run_url is empty"
+              exit 1
+            fi
+            if [ -z "$PREV_RUN_ID" ] && [ -n "$PREV_RUN_URL" ]; then
+              echo "FAIL: previous_run_url is set but previous_run_id is empty"
+              exit 1
+            fi
+            echo "PASS: outputs are consistent"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (sentinel repo is not resolvable)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi

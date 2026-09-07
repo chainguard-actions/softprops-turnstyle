@@ -1,0 +1,81 @@
+name: main
+
+on:
+  workflow_dispatch:
+  push:
+    paths-ignore:
+      - "*.md"
+    branches:
+      - master
+  pull_request:
+    paths-ignore:
+      - "*.md"
+    branches:
+      - master
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          # Build the exact head that the bundle updater will commit onto.
+          ref: ${{ github.event.pull_request.user.login == 'dependabot[bot]' && github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".tool-versions"
+          cache: "npm"
+
+      - name: Install
+        run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Build
+        run: npm run build
+      - name: Test
+        run: npm run test
+      - name: Test bundle automation
+        run: node --test .github/scripts/dependabot-bundle.test.cjs
+      - name: Format
+        run: npm run fmtcheck
+
+      - name: Upload Dependabot bundle
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.user.login == 'dependabot[bot]' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          startsWith(github.head_ref, 'dependabot/npm_and_yarn/')
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dependabot-bundle-${{ github.event.pull_request.head.sha }}
+          path: dist/index.js
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true
+      - name: Check bundled action
+        run: git diff --exit-code -- dist/index.js
+
+  integration:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".tool-versions"
+          cache: "npm"
+
+      - name: Turnstyle
+        uses: ./ # Uses an action in the root directory
+        with:
+          poll-interval-seconds: 10
+
+      - name: Deploy
+        run: sleep 180
