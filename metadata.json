@@ -1,7 +1,0 @@
-{
-  "owner": "softprops",
-  "name": "turnstyle",
-  "visibility": "internal",
-  "description": "A GitHub Action for serializing workflow runs",
-  "block_publish": false
-}
