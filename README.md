@@ -6,17 +6,17 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 ## Versions
 
-| Version | Tag | Upstream commit |
-|---------|-----|-----------------|
-| v3.2.0 | [`v3.2.0`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.0) | [`9d692f1`](https://github.com/softprops/turnstyle/commit/9d692f15fa9f84928799bccac2dba6565e024bdf) |
-| v3.2.1 | [`v3.2.1`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.1) | [`2e4451e`](https://github.com/softprops/turnstyle/commit/2e4451ef94c5969eee533c487092052d4d1a53af) |
-| v3.2.2 | [`v3.2.2`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.2) | [`15f9da4`](https://github.com/softprops/turnstyle/commit/15f9da4059166900981058ba251e0b652511c68f) |
-| v3.2.3 | [`v3.2.3`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.3) | [`e565d2d`](https://github.com/softprops/turnstyle/commit/e565d2d86403c5d23533937e95980570545e5586) |
-| v3.2.4 | [`v3.2.4`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.4) | [`e15e934`](https://github.com/softprops/turnstyle/commit/e15e934b3f69ee283ba389ea05c8886baa656d93) |
-| v3.3.0 | [`v3.3.0`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.0) | [`99fadf3`](https://github.com/softprops/turnstyle/commit/99fadf33b72861eba49a55800c75e279a2e9740a) |
-| v3.3.1 | [`v3.3.1`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.1) | [`fa86562`](https://github.com/softprops/turnstyle/commit/fa86562458e34a9067f0dc1316a76b3975b1c413) |
-| v3.3.2 | [`v3.3.2`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.2) | [`afaccda`](https://github.com/softprops/turnstyle/commit/afaccda0f3c0136fb7cb4a734b9b96be03599948) |
-| v3.3.3 | [`v3.3.3`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.3) | [`3805450`](https://github.com/softprops/turnstyle/commit/3805450be63b8c80577dc253e8c17e9132036df4) |
+| Version | Tag | Upstream commit | Hardening report |
+|---------|-----|-----------------|------------------|
+| v3.2.0 | [`v3.2.0`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.0) | [`9d692f1`](https://github.com/softprops/turnstyle/commit/9d692f15fa9f84928799bccac2dba6565e024bdf) | [`HARDENING.md`](https://github.com/chainguard-actions/softprops-turnstyle/blob/v3.2.0/HARDENING.md) |
+| v3.2.1 | [`v3.2.1`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.1) | [`2e4451e`](https://github.com/softprops/turnstyle/commit/2e4451ef94c5969eee533c487092052d4d1a53af) | [`HARDENING.md`](https://github.com/chainguard-actions/softprops-turnstyle/blob/v3.2.1/HARDENING.md) |
+| v3.2.2 | [`v3.2.2`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.2) | [`15f9da4`](https://github.com/softprops/turnstyle/commit/15f9da4059166900981058ba251e0b652511c68f) | [`HARDENING.md`](https://github.com/chainguard-actions/softprops-turnstyle/blob/v3.2.2/HARDENING.md) |
+| v3.2.3 | [`v3.2.3`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.3) | [`e565d2d`](https://github.com/softprops/turnstyle/commit/e565d2d86403c5d23533937e95980570545e5586) | [`HARDENING.md`](https://github.com/chainguard-actions/softprops-turnstyle/blob/v3.2.3/HARDENING.md) |
+| v3.2.4 | [`v3.2.4`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.2.4) | [`e15e934`](https://github.com/softprops/turnstyle/commit/e15e934b3f69ee283ba389ea05c8886baa656d93) | [`HARDENING.md`](https://github.com/chainguard-actions/softprops-turnstyle/blob/v3.2.4/HARDENING.md) |
+| v3.3.0 | [`v3.3.0`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.0) | [`99fadf3`](https://github.com/softprops/turnstyle/commit/99fadf33b72861eba49a55800c75e279a2e9740a) | [`HARDENING.md`](https://github.com/chainguard-actions/softprops-turnstyle/blob/v3.3.0/HARDENING.md) |
+| v3.3.1 | [`v3.3.1`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.1) | [`fa86562`](https://github.com/softprops/turnstyle/commit/fa86562458e34a9067f0dc1316a76b3975b1c413) | [`HARDENING.md`](https://github.com/chainguard-actions/softprops-turnstyle/blob/v3.3.1/HARDENING.md) |
+| v3.3.2 | [`v3.3.2`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.2) | [`afaccda`](https://github.com/softprops/turnstyle/commit/afaccda0f3c0136fb7cb4a734b9b96be03599948) | [`HARDENING.md`](https://github.com/chainguard-actions/softprops-turnstyle/blob/v3.3.2/HARDENING.md) |
+| v3.3.3 | [`v3.3.3`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.3) | [`3805450`](https://github.com/softprops/turnstyle/commit/3805450be63b8c80577dc253e8c17e9132036df4) | [`HARDENING.md`](https://github.com/chainguard-actions/softprops-turnstyle/blob/v3.3.3/HARDENING.md) |
 
 ## Privacy
 
