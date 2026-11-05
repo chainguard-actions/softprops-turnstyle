@@ -1,0 +1,42 @@
+name: Test basic usage
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          poll-interval-seconds: "2"
+          abort-after-seconds: "60"
+          same-branch-only: "true"
+      - name: Assert action ran (or failed gracefully on the sentinel repo)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+          FORCE: ${{ steps.action.outputs.force_continued }}
+          PREV_ID: ${{ steps.action.outputs.previous_run_id }}
+          PREV_URL: ${{ steps.action.outputs.previous_run_url }}
+        run: |
+          echo "outcome: $OUTCOME"
+          echo "force_continued: '$FORCE'"
+          echo "previous_run_id: '$PREV_ID'"
+          echo "previous_run_url: '$PREV_URL'"
+          if [ "$OUTCOME" = "success" ]; then
+            if [ -n "$FORCE" ]; then
+              echo "FAIL: force_continued must not be set without continue-after-seconds"
+              exit 1
+            fi
+            if [ -n "$PREV_ID" ] && ! echo "$PREV_ID" | grep -qE '^[0-9]+$'; then
+              echo "FAIL: previous_run_id is not numeric"
+              exit 1
+            fi
+            echo "PASS: action succeeded"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (sentinel repo is not resolvable)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi

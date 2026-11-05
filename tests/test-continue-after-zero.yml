@@ -1,0 +1,37 @@
+name: Test continue-after-seconds 0 force-continues
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          continue-after-seconds: "0"
+          poll-interval-seconds: "1"
+      - name: Assert force_continued set and previous run outputs empty
+        env:
+          FORCE: ${{ steps.action.outputs.force_continued }}
+          PREV_ID: ${{ steps.action.outputs.previous_run_id }}
+          PREV_URL: ${{ steps.action.outputs.previous_run_url }}
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          echo "force_continued: '$FORCE'"
+          echo "previous_run_id: '$PREV_ID'"
+          echo "previous_run_url: '$PREV_URL'"
+          if [ "$OUTCOME" != "success" ]; then
+            echo "FAIL: expected success"
+            exit 1
+          fi
+          if [ "$FORCE" != "1" ] && [ "$FORCE" != "true" ]; then
+            echo "FAIL: expected force_continued to be truthy"
+            exit 1
+          fi
+          if [ -n "$PREV_ID" ] || [ -n "$PREV_URL" ]; then
+            echo "FAIL: expected previous run outputs to be empty"
+            exit 1
+          fi
+          echo "PASS"
