@@ -18,6 +18,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 | v3.3.2 | [`v3.3.2`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.2) | [`afaccda`](https://github.com/softprops/turnstyle/commit/afaccda0f3c0136fb7cb4a734b9b96be03599948) | [`HARDENING.md`](https://github.com/chainguard-actions/softprops-turnstyle/blob/v3.3.2/HARDENING.md) |
 | v3.3.3 | [`v3.3.3`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.3) | [`3805450`](https://github.com/softprops/turnstyle/commit/3805450be63b8c80577dc253e8c17e9132036df4) | [`HARDENING.md`](https://github.com/chainguard-actions/softprops-turnstyle/blob/v3.3.3/HARDENING.md) |
 | v3.3.4 | [`v3.3.4`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.4) | [`205d0f5`](https://github.com/softprops/turnstyle/commit/205d0f5001f3666ce880d22e0d885f2dac989327) | [`HARDENING.md`](https://github.com/chainguard-actions/softprops-turnstyle/blob/v3.3.4/HARDENING.md) |
+| v3.3.5 | [`v3.3.5`](https://github.com/chainguard-actions/softprops-turnstyle/tree/v3.3.5) | [`ec98699`](https://github.com/softprops/turnstyle/commit/ec9869921df7799d5afea364f4026770f3760342) | [`HARDENING.md`](https://github.com/chainguard-actions/softprops-turnstyle/blob/v3.3.5/HARDENING.md) |
 
 ## Privacy
 
